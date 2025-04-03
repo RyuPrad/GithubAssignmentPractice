@@ -3,3 +3,4 @@ Initial project details.
 ## New Feature Section
 - Added feature X.
 - Configuration details for feature X.
+- This feature allows users to customize dashboard views.
