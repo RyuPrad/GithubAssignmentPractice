@@ -1,0 +1,44 @@
+name: Create Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*' # Trigger workflow when a tag like v1.0.0 is pushed
+
+jobs:
+  build:
+    runs-on: ubuntu-latest # Specifies the type of machine to run on
+    steps:
+      # Step 1: Get the code from your repository
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Step 2: (Optional) Prepare files for the release
+      # Here we just zip the text files as an example
+      - name: Create artifact archive (Example)
+        run: zip release-artifact.zip project_details.txt README.md
+
+      # Step 3: Create the Release on GitHub's Releases page
+      - name: Create GitHub Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Special token provided by Actions
+        with:
+          tag_name: ${{ github.ref_name }} # Uses the tag you pushed (e.g., v1.0.2)
+          release_name: Release ${{ github.ref_name }} # e.g., Release v1.0.2
+          body: |
+            Automated release for ${{ github.ref_name }}
+          draft: false
+          prerelease: false
+
+      # Step 4: Upload the zipped file (artifact) to the Release page
+      - name: Upload Release Asset (Example)
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # URL from Step 3
+          asset_path: ./release-artifact.zip # Path to the zip file created in Step 2
+          asset_name: project-files-${{ github.ref_name }}.zip # Name of the file on Releases page
+          asset_content_type: application/zip
