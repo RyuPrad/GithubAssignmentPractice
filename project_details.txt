@@ -4,3 +4,4 @@ Initial project details.
 - Added feature X.
 - Configuration details for feature X.
 - This feature allows users to customize dashboard views.
+Testing the CI/CD workflow.
